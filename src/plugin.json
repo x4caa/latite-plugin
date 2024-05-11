@@ -1,6 +1,6 @@
 {
-    "name": "Template",
+    "name": "Playtime",
     "version": "1.0.0",
-    "author": "template",
-    "description": "Does template things"
+    "author": "Jax",
+    "description": "Tracks your session and overall playtime and displays it on the screen."
 }
