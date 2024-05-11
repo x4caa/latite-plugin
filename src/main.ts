@@ -11,7 +11,7 @@ let overallPlaytime = 0
 
 if (!fs.exists("playtime")) fs.createDirectory("playtime")
 
-// Update the playtime every second
+// update the playtime every second while enabled
 client.on("world-tick", () => {
     if (!playtimeHud.isEnabled()) return
     tickTimer++
@@ -22,18 +22,19 @@ client.on("world-tick", () => {
     }
 })
 
-// Reset session timer and update overall playtime when joining/leaving a game
+// reset session timer and update overall playtime when joining/leaving a game
 client.on("join-game", () => {
     sessionTimer = 0
     overallPlaytime = parseInt(util.bufferToString(fs.read("playtime/playtime.txt")))
     if (overallPlaytime === undefined) overallPlaytime = 0
 })
 
-// 
+// save the overall playtime when leaving the game
 client.on("leave-game", () => {
     fs.write("playtime/playtime.txt", util.stringToBuffer(`${overallPlaytime}`))
 })
 
+// render module
 playtimeHud.on("text", () => {
     let renderText = ""
     if (showSessionTimer.getValue()) renderText += `Session: ${formatTime(sessionTimer)}\n`
@@ -41,18 +42,19 @@ playtimeHud.on("text", () => {
     return renderText
 });
 
+// set values when enabled
 playtimeHud.on("enable", () => {
     overallPlaytime = parseInt(util.bufferToString(fs.read("playtime/playtime.txt")))
     if (overallPlaytime === undefined) overallPlaytime = 0
 })
 
+// save the overall playtime when disabled
 playtimeHud.on("disable", () => {
     fs.write("playtime/playtime.txt", util.stringToBuffer(`${overallPlaytime}`))
 })
 
+// format the time into a readable format
 function formatTime(time: number): string {
-    // 00:00:00 format
-    // if the time is less than 10, add a 0 in front
     let hours = Math.floor(time / 3600)
     let minutes = Math.floor((time % 3600) / 60)
     let seconds = time % 60
